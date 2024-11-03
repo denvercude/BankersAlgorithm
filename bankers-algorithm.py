@@ -34,10 +34,12 @@ def print_matrix():
 def enter_parameters():
     # Get the number of processes and resources.
     num_processes = int(input("Enter the number of processes: "))
-    num_resources = int(input("Enter the number of processes"))
+    num_resources = int(input("Enter the number of processes: "))
 
     # Allocate memory for resource, available, max_claim, allocated, and need arrays
-    resource = [0] * num_resources
+    user_input = input(f"Enter number of units for resources (r0 to r{num_resources - 1}): ")
+    resource_array = list(map(int, user_input.split()))
+    print(resource_array)
     available = [0] * num_resources
     max_claim = []
     for i in range(num_processes):
@@ -51,6 +53,7 @@ def enter_parameters():
     for i in range(num_processes):
         row = [0] * num_resources
         need.append(row)
+    
     pass
 
 def determine_safe_sequence():
