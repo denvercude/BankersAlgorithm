@@ -39,7 +39,6 @@ def enter_parameters():
     # Allocate memory for resource, available, max_claim, allocated, and need arrays
     user_input = input(f"Enter number of units for resources (r0 to r{num_resources - 1}): ")
     resource_array = list(map(int, user_input.split()))
-    print(resource_array)
 
     max_claim = []
     for i in range(num_processes):
@@ -47,18 +46,24 @@ def enter_parameters():
         row = list(map(int, user_input.split()))
         max_claim.append(row)
 
-    for row in max_claim:
-        print(row)
-
     allocated = []
     for i in range(num_processes):
         user_input = input(f"Enter number of units of each resource (r0 to r{num_resources - 1}) allocated to process p{i}: ")
         row = list(map(int, user_input.split()))
         allocated.append(row)
-    pass
+    
+    available = []
+    for j in range(num_resources):
+        allocated_sum = sum(allocated[i][j] for i in range(num_processes))
+        available.append(resource_array[j] - allocated_sum)
 
-    for row in allocated:
-        print(row)
+    print(available)
+    
+    # Print Units/Available Table
+    print(f"{'':<8}{'Units':<8}{'Available':<9}")
+    print(f"{'-' * 24}")
+    for i in range(num_resources):
+        print(f"r{i:<7}{resource_array[i]:<8}{available[i]:<8}")
 
 def determine_safe_sequence():
     # While not all processes are sequenced:
