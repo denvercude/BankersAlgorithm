@@ -40,21 +40,25 @@ def enter_parameters():
     user_input = input(f"Enter number of units for resources (r0 to r{num_resources - 1}): ")
     resource_array = list(map(int, user_input.split()))
     print(resource_array)
-    available = [0] * num_resources
+
     max_claim = []
     for i in range(num_processes):
-        row = [0] * num_resources
+        user_input = input(f"Enter maximum number of units process p{i} will request from each resource (r0 to r{num_resources - 1}): ")
+        row = list(map(int, user_input.split()))
         max_claim.append(row)
+
+    for row in max_claim:
+        print(row)
+
     allocated = []
     for i in range(num_processes):
-        row = [0] * num_resources
+        user_input = input(f"Enter number of units of each resource (r0 to r{num_resources - 1}) allocated to process p{i}: ")
+        row = list(map(int, user_input.split()))
         allocated.append(row)
-    need = []
-    for i in range(num_processes):
-        row = [0] * num_resources
-        need.append(row)
-    
     pass
+
+    for row in allocated:
+        print(row)
 
 def determine_safe_sequence():
     # While not all processes are sequenced:
