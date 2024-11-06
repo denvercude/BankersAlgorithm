@@ -3,6 +3,15 @@
 # Course: COMP 322
 # Date: 11/01/24
 
+# ----------------
+# Global Variables
+# ----------------
+num_resources = 0
+
+resource_array = []
+available = []
+
+
 # ---------
 # Functions
 # ---------
@@ -18,26 +27,15 @@ def get_menu_choice():
     menu_selection = int(input("Enter selection: "))
     return menu_selection
 
-def print_resource_vector():
-    # Loop through each resource index
-    # Print total units and available units for each resource
-    pass
-
-def print_matrix():
-    # Loop through each resource index
-    # For each process and resource, print:
-    # - Max number of units each process may request
-    # - Units allocated
-    # - Units needed
-    pass
-
 def enter_parameters():
     # Get the number of processes and resources.
     num_processes = int(input("Enter the number of processes: "))
-    num_resources = int(input("Enter the number of processes: "))
+    global num_resources
+    num_resources = int(input("Enter the number of resources: "))
 
     # Allocate memory for resource, available, max_claim, allocated, and need arrays
     user_input = input(f"Enter number of units for resources (r0 to r{num_resources - 1}): ")
+    global resource_array
     resource_array = list(map(int, user_input.split()))
 
     max_claim = []
@@ -52,18 +50,11 @@ def enter_parameters():
         row = list(map(int, user_input.split()))
         allocated.append(row)
     
+    global available
     available = []
     for j in range(num_resources):
         allocated_sum = sum(allocated[i][j] for i in range(num_processes))
         available.append(resource_array[j] - allocated_sum)
-
-    print(available)
-    
-    # Print Units/Available Table
-    print(f"{'':<8}{'Units':<8}{'Available':<9}")
-    print(f"{'-' * 24}")
-    for i in range(num_resources):
-        print(f"r{i:<7}{resource_array[i]:<8}{available[i]:<8}")
 
 def determine_safe_sequence():
     # While not all processes are sequenced:
@@ -72,6 +63,21 @@ def determine_safe_sequence():
     #     - If all resources are available, safely sequence process
     #     - Update available resources and free resources allocated to the process
     #     - Increment number of sequenced processes
+    pass
+
+def print_resource_vector():
+    # Print Units/Available Table
+    print(f"{'':<8}{'Units':<8}{'Available':<9}")
+    print(f"{'-' * 24}")
+    for i in range(num_resources):
+        print(f"r{i:<7}{resource_array[i]:<8}{available[i]:<8}")
+
+def print_matrix():
+    # Loop through each resource index
+    # For each process and resource, print:
+    # - Max number of units each process may request
+    # - Units allocated
+    # - Units needed
     pass
 
 def quit_program():
@@ -88,6 +94,8 @@ selection = get_menu_choice()
 while 0 < selection < 3:
     if selection == 1:
         enter_parameters()
+        print()
+        print_resource_vector()
         print()
         selection = get_menu_choice()
     elif selection == 2:
