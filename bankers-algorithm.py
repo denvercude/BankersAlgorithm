@@ -57,12 +57,43 @@ def enter_parameters():
         available.append(resource_array[j] - allocated_sum)
 
 def determine_safe_sequence():
-    # While not all processes are sequenced:
-    # - For each process, if not yet safely sequenced:
-    #     - For each resource, check if need <= available
-    #     - If all resources are available, safely sequence process
-    #     - Update available resources and free resources allocated to the process
-    #     - Increment number of sequenced processes
+    # Initialize the list to store the safe sequence of processes.
+    safe_sequence = []
+
+    # Initialize a list to mark each process as finished or unfinished.
+    finished = [False] * num_processes
+
+    # Create a variable to track if the system found any process that could run in each loop.
+    progress = True
+
+    # Loop while there are unfinished processes and we are making progress.
+    while len(safe_sequence) < num_processes and progress:
+        # Reset progress to False at the beginning of each loop.
+        progress = False
+
+        # Loop through each process to check if it can be safely added to the sequence.
+        for i in range(num_processes):
+            if not finished[i]:
+                # Check if all resources required by process i are available.
+                can_run = True
+                for j in range(num_resources):
+                    if need[i][j] > available[j]:
+                        can_run = False
+                        break
+
+                # If process i can run, add it to the safe sequence and release its resources.
+                if can_run:
+                    for j in range(num_resources):
+                        available[j] += allocated[i][j]
+                    safe_sequence.append(i)
+                    finished[i] = True
+                    progress = True  # Mark progress as True since a process was added to the sequence.
+
+    # If all processes are finished, we have a safe sequence; otherwise, deadlock is possible.
+    if len(safe_sequence) == num_processes:
+        return safe_sequence  # Safe sequence found
+    else:
+        return None  # No safe sequence exists
     pass
 
 def print_resource_vector():
