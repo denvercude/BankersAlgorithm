@@ -116,36 +116,39 @@ def determine_safe_sequence():
 
 def print_resource_available():
     # Print Units/Available Table
-    print(f"{'':<8}{'Units':<8}{'Available':<9}")
+    print(f"\tUnits   Available")
     print(f"{'-' * 24}")
     for i in range(num_resources):
-        print(f"r{i:<7}{resource_units[i]:<8}{available[i]:<8}")
+        print(f"r{i}\t{resource_units[i]}\t{available[i]}")
 
 def print_matrix():
-    num_resources = 3
-    resources = ["r" + str(i) for i in range(num_resources)]
-    resource_headers = " ".join(f"{resource:<7}" for resource in resources)
+    resource_headers = ""
+    for i in range(num_resources):
+        resource_headers += f"r{i}"
+        resource_headers += "\t"
 
     # Print headers, each centered within a 30-character block
-    print(f"{'Max claim':>17}{'Current':>30}{'Potential':>34}")
-    print(' ' * 8 + resource_headers, ' ' * 8 + resource_headers, ' ' * 8 + resource_headers)
+    print(f"\tMax claim\t\t\tCurrent\t\t\t\tPotential")
+    print(f"\t{resource_headers}\t{resource_headers}\t{resource_headers}")
     print('-' * 90)
 
     for i in range(num_processes):
-
         max_claim_string = ""
         for j in range(num_resources):
-            max_claim_string += (f"{max_claim[i][j]}" + ' ' * 7)
+            max_claim_string += f"{max_claim[i][j]}"
+            max_claim_string += "\t"
         
         current_string = ""
         for j in range(num_resources):
-            current_string += (f"{allocated[i][j]}" + ' ' * 7)
+            current_string += f"{allocated[i][j]}"
+            current_string += "\t"
         
         potential_string = ""
         for j in range(num_resources):
-            potential_string += (f"{need[i][j]}" + ' ' * 7)
+            potential_string += f"{need[i][j]}"
+            potential_string += "\t"
         
-        print(f"p{i}" + ' ' * 6 + max_claim_string, ' ' * 7 + current_string, ' ' * 7 + potential_string)
+        print(f"p{i}\t{max_claim_string}\t{current_string}\t{potential_string}")
 
 
 # ------------------
