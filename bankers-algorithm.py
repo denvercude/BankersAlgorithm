@@ -7,9 +7,12 @@
 # Global Variables
 # ----------------
 num_resources = 0
-
-resource_array = []
+num_processes = 0
+resource_units = []
+allocated = []
 available = []
+need = []
+safe_sequence = []
 
 
 # ---------
@@ -29,14 +32,15 @@ def get_menu_choice():
 
 def enter_parameters():
     # Get the number of processes and resources.
+    global num_processes
     num_processes = int(input("Enter the number of processes: "))
     global num_resources
     num_resources = int(input("Enter the number of resources: "))
 
     # Allocate memory for resource, available, max_claim, allocated, and need arrays
     user_input = input(f"Enter number of units for resources (r0 to r{num_resources - 1}): ")
-    global resource_array
-    resource_array = list(map(int, user_input.split()))
+    global resource_units
+    resource_units = list(map(int, user_input.split()))
 
     max_claim = []
     for i in range(num_processes):
@@ -44,6 +48,7 @@ def enter_parameters():
         row = list(map(int, user_input.split()))
         max_claim.append(row)
 
+    global allocated
     allocated = []
     for i in range(num_processes):
         user_input = input(f"Enter number of units of each resource (r0 to r{num_resources - 1}) allocated to process p{i}: ")
@@ -54,30 +59,75 @@ def enter_parameters():
     available = []
     for j in range(num_resources):
         allocated_sum = sum(allocated[i][j] for i in range(num_processes))
-        available.append(resource_array[j] - allocated_sum)
+        available.append(resource_units[j] - allocated_sum)
+
+    global need
+    need = [[0] * num_resources for _ in range(num_processes)]
+    for i in range(num_processes):
+        for j in range(num_resources):
+            need[i][j] = max_claim[i][j] - allocated[i][j]
 
 def determine_safe_sequence():
-    # While not all processes are sequenced:
-    # - For each process, if not yet safely sequenced:
-    #     - For each resource, check if need <= available
-    #     - If all resources are available, safely sequence process
-    #     - Update available resources and free resources allocated to the process
-    #     - Increment number of sequenced processes
-    pass
+    
+    global safe_sequence
+    safe_sequence = []
 
-def print_resource_vector():
+    
+    finished = [False] * num_processes
+
+    
+    progress = True
+
+   
+    while len(safe_sequence) < num_processes and progress:
+        
+        progress = False
+
+        
+        for i in range(num_processes):
+            if not finished[i]:
+                
+                print("Checking: < ", end='')
+                for j in range(num_resources):
+                    print(f"{need[i][j]} ", end='')
+                print("> <= < ", end='')
+                for j in range(num_resources):
+                    print(f"{available[j]} ", end='')
+                print("> :", end='')
+
+                can_run = True
+                for j in range(num_resources):
+                    if need[i][j] > available[j]:
+                        can_run = False
+                        break
+
+                
+                if can_run:
+                    print(f"p{i} safely sequenced")
+                    for j in range(num_resources):
+                        available[j] += allocated[i][j]
+                    safe_sequence.append(i)
+                    finished[i] = True
+                    progress = True
+                else:
+                    print(f"p{i} could not be sequenced")
+
+def print_resource_available():
     # Print Units/Available Table
     print(f"{'':<8}{'Units':<8}{'Available':<9}")
     print(f"{'-' * 24}")
     for i in range(num_resources):
-        print(f"r{i:<7}{resource_array[i]:<8}{available[i]:<8}")
+        print(f"r{i:<7}{resource_units[i]:<8}{available[i]:<8}")
 
 def print_matrix():
-    # Loop through each resource index
-    # For each process and resource, print:
-    # - Max number of units each process may request
-    # - Units allocated
-    # - Units needed
+    num_resources = 3
+    resources = ["r" + str(i) for i in range(num_resources)]
+    resource_string = " ".join(f"{resource:<7}" for resource in resources)
+
+    # Print headers, each centered within a 30-character block
+    print(f"{'Max claim':>17}{'Current':>30}{'Potential':>34}")
+    print(' ' * 8 + resource_string, ' ' * 8 + resource_string, ' ' * 8 + resource_string)
+    print('-' * 90)
     pass
 
 def quit_program():
@@ -86,7 +136,7 @@ def quit_program():
 
 # ------------------
 # Main Program Logic
-# ------------------
+# ------------------~
 
 # Get the initial selection
 selection = get_menu_choice()
@@ -95,7 +145,9 @@ while 0 < selection < 3:
     if selection == 1:
         enter_parameters()
         print()
-        print_resource_vector()
+        print_resource_available()
+        print()
+        print_matrix()
         print()
         selection = get_menu_choice()
     elif selection == 2:
