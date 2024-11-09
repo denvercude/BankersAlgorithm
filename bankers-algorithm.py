@@ -9,6 +9,7 @@
 num_resources = 0
 num_processes = 0
 resource_units = []
+max_claim = []
 allocated = []
 available = []
 need = []
@@ -42,6 +43,7 @@ def enter_parameters():
     global resource_units
     resource_units = list(map(int, user_input.split()))
 
+    global max_claim
     max_claim = []
     for i in range(num_processes):
         user_input = input(f"Enter maximum number of units process p{i} will request from each resource (r0 to r{num_resources - 1}): ")
@@ -122,17 +124,29 @@ def print_resource_available():
 def print_matrix():
     num_resources = 3
     resources = ["r" + str(i) for i in range(num_resources)]
-    resource_string = " ".join(f"{resource:<7}" for resource in resources)
+    resource_headers = " ".join(f"{resource:<7}" for resource in resources)
 
     # Print headers, each centered within a 30-character block
     print(f"{'Max claim':>17}{'Current':>30}{'Potential':>34}")
-    print(' ' * 8 + resource_string, ' ' * 8 + resource_string, ' ' * 8 + resource_string)
+    print(' ' * 8 + resource_headers, ' ' * 8 + resource_headers, ' ' * 8 + resource_headers)
     print('-' * 90)
-    pass
 
-def quit_program():
-    # Check if vectors/arrays are not None; if so, free each vector/array
-    pass
+    for i in range(num_processes):
+
+        max_claim_string = ""
+        for j in range(num_resources):
+            max_claim_string += (f"{max_claim[i][j]}" + ' ' * 7)
+        
+        current_string = ""
+        for j in range(num_resources):
+            current_string += (f"{allocated[i][j]}" + ' ' * 7)
+        
+        potential_string = ""
+        for j in range(num_resources):
+            potential_string += (f"{need[i][j]}" + ' ' * 7)
+        
+        print(f"p{i}" + ' ' * 6 + max_claim_string, ' ' * 7 + current_string, ' ' * 7 + potential_string)
+
 
 # ------------------
 # Main Program Logic
@@ -150,9 +164,9 @@ while 0 < selection < 3:
         print_matrix()
         print()
         selection = get_menu_choice()
-    elif selection == 2:
+    else:
         determine_safe_sequence()
         print()
         selection = get_menu_choice()
-    elif selection == 3:
-        quit_program()
+
+print("Quitting program...")
